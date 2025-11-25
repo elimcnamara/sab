@@ -2,92 +2,165 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Steal A Brainrot Web</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Brainrot Conveyor Fullscreen</title>
 <style>
-body {
-  background: black;
-  color: #00ff00;
-  font-family: monospace;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 100px;
-  padding-top: 50px;
-}
-.conveyor {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.slot {
-  width: 150px;
-  height: 50px;
-  border: 2px solid #00ff00;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  cursor: pointer;
-}
-.item {
-  width: 140px;
-  height: 40px;
-  background: #003300;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  transition: transform 0.3s;
-}
-.money {
-  position: absolute;
-  top: -20px;
-  color: yellow;
-  font-size: 12px;
-}
-#shop {
-  position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  max-width: 90%;
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #00ff00;
-  padding: 5px;
-}
-.shop-item {
-  padding: 5px 10px;
-  border: 1px solid #00ff00;
-  cursor: pointer;
-  white-space: nowrap;
-}
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Arial Black', sans-serif;
+    background: #90ee90;
+    color: #fff;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+  }
+
+  .container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: stretch;
+  }
+
+  .slots-area {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 20px;
+    padding: 40px;
+    align-content: center;
+  }
+
+  .conveyor {
+    width: 800px;
+    flex-shrink: 0;
+    height: 100vh;
+    background: #888;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slot {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #3a5f0b, #5a8f2f);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border-radius: 15px;
+    border: 3px solid #6ab04c;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .slot:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(106, 176, 76, 0.5);
+  }
+
+  .slot.empty {
+    background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+    border: 3px dashed #555;
+    opacity: 0.5;
+  }
+
+  .slot .earned {
+    font-size: 24px;
+    margin-top: 10px;
+    color: #f1c40f;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+  }
+
+  .slot .name {
+    font-size: 18px;
+    text-align: center;
+    color: #ecf0f1;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  }
+
+  .slot .selling {
+    font-size: 16px;
+    margin-top: 10px;
+    color: #e74c3c;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+  }
+
+  .movingItem {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight: bold;
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+    padding: 15px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    transition: all 0.2s ease;
+    border: 3px solid;
+  }
+
+  .movingItem:hover {
+    transform: translateX(-50%) scale(1.1);
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.4);
+  }
+
+  .movingItem.cannotAfford {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  #moneyDisplay {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 48px;
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    padding: 20px 50px;
+    border-radius: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    border: 4px solid #f1c40f;
+    z-index: 1000;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  }
 </style>
 </head>
 <body>
 
-<div class="conveyor" id="leftConveyor">
-  <div class="slot"></div>
-  <div class="slot"></div>
-  <div class="slot"></div>
+<div class="container">
+<div class="slots-area" id="slotsArea1"></div>
+<div class="conveyor" id="middle"></div>
+<div class="slots-area" id="slotsArea2"></div>
 </div>
-
-<div class="conveyor" id="rightConveyor">
-  <div class="slot"></div>
-  <div class="slot"></div>
-  <div class="slot"></div>
-</div>
-
-<div id="shop"></div>
-<div id="moneyDisplay" style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); font-size: 24px;">$0</div>
+<div id="moneyDisplay">$100</div>
 
 <script>
-let money = 0;
+let money = 100;
 const moneyDisplay = document.getElementById("moneyDisplay");
+const slotsArea1 = document.getElementById("slotsArea1");
+const slotsArea2 = document.getElementById("slotsArea2");
+const middle = document.getElementById("middle");
+
+const slots = [null, null, null, null, null, null];
 
 const items = [
 {name:"Noobini Pizzanini",rarity:"Common",value1:1,value2:25},
@@ -355,53 +428,249 @@ const items = [
 {name:"Strawberry Elephant",rarity:"OG",value1:350000000,value2:500000000000}
 ];
 
-// Populate shop
-const shop = document.getElementById("shop");
-items.forEach(item=>{
-  const btn=document.createElement("div");
-  btn.className="shop-item";
-  btn.innerHTML=`${item.name} ($${item.value2})`;
-  btn.onclick=()=>buyItem(item);
-  shop.appendChild(btn);
+const rarityColors = {
+  "Common": "#808080",
+  "Rare": "#4169E1",
+  "Epic": "#9B30FF",
+  "Legendary": "#FFD700",
+  "Mythic": "#FF1493",
+  "Mythic (Lucky Box)": "#FF69B4",
+  "Brainrot God": "#00FFFF",
+  "Brainrot God (Lucky Box)": "#00CED1",
+  "Secret": "#FF0000",
+  "Secret (Lucky Box)": "#FF4500",
+  "OG": "#FFFFFF"
+};
+
+const rarityWeights = {
+  "Common": 40,
+  "Rare": 30,
+  "Epic": 15,
+  "Legendary": 8,
+  "Mythic": 4,
+  "Mythic (Lucky Box)": 1.5,
+  "Brainrot God": 1,
+  "Brainrot God (Lucky Box)": 0.3,
+  "Secret": 0.15,
+  "Secret (Lucky Box)": 0.04,
+  "OG": 0.01
+};
+
+function getRandomItem() {
+  const itemsByRarity = {};
+  items.forEach(item => {
+    if (!itemsByRarity[item.rarity]) itemsByRarity[item.rarity] = [];
+    itemsByRarity[item.rarity].push(item);
+  });
+  
+  const totalWeight = Object.values(rarityWeights).reduce((a, b) => a + b, 0);
+  let random = Math.random() * totalWeight;
+  
+  for (const [rarity, weight] of Object.entries(rarityWeights)) {
+    random -= weight;
+    if (random <= 0 && itemsByRarity[rarity] && itemsByRarity[rarity].length > 0) {
+      const rarityItems = itemsByRarity[rarity];
+      return rarityItems[Math.floor(Math.random() * rarityItems.length)];
+    }
+  }
+  
+  return items[0];
+}
+
+for (let i = 0; i < 3; i++) {
+  const slot1 = document.createElement("div");
+  slot1.className = "slot empty";
+  slot1.textContent = "Empty";
+  slotsArea1.appendChild(slot1);
+  
+  const slot2 = document.createElement("div");
+  slot2.className = "slot empty";
+  slot2.textContent = "Empty";
+  slotsArea2.appendChild(slot2);
+}
+
+function createSlotElement(item) {
+  const slot = document.createElement("div");
+  slot.className = "slot";
+  slot.dataset.value = item.value1;
+  slot.innerHTML = `<div class="name">${item.name}</div><div class="earned">+$0</div><div class="selling"></div>`;
+  let earned = 0;
+  let holdTimer = null;
+  let holdStart = 0;
+  let holdInterval = null;
+  const HOLD_DURATION = 3000;
+
+  slot.addEventListener("mouseenter", () => {
+    if (earned > 0) {
+      money += earned;
+      moneyDisplay.textContent = "$" + money;
+      earned = 0;
+      slot.querySelector(".earned").textContent = "+$0";
+    }
+  });
+
+  slot.addEventListener("mousedown", () => {
+    holdStart = Date.now();
+    slot.querySelector(".selling").textContent = "SELLING: 3.0";
+    
+    holdInterval = setInterval(() => {
+      const elapsed = Date.now() - holdStart;
+      const remaining = Math.max(0, (HOLD_DURATION - elapsed) / 1000);
+      slot.querySelector(".selling").textContent = `SELLING: ${remaining.toFixed(1)}`;
+    }, 50);
+
+    holdTimer = setTimeout(() => {
+      const sellPrice = Math.floor(item.value2 * 0.5);
+      money += sellPrice;
+      moneyDisplay.textContent = "$" + money;
+      
+      const slotIndex = slots.indexOf(slot);
+      if (slotIndex !== -1) {
+        slots[slotIndex] = null;
+        const emptySlot = document.createElement("div");
+        emptySlot.className = "slot empty";
+        emptySlot.textContent = "Empty";
+        const targetArea = slotIndex < 3 ? slotsArea1 : slotsArea2;
+        const targetIndex = slotIndex < 3 ? slotIndex : slotIndex - 3;
+        targetArea.replaceChild(emptySlot, targetArea.children[targetIndex]);
+      }
+      
+      clearInterval(holdInterval);
+    }, HOLD_DURATION);
+  });
+
+  slot.addEventListener("mouseup", () => {
+    if (holdTimer) {
+      clearTimeout(holdTimer);
+      holdTimer = null;
+    }
+    if (holdInterval) {
+      clearInterval(holdInterval);
+      holdInterval = null;
+    }
+    slot.querySelector(".selling").textContent = "";
+  });
+
+  slot.addEventListener("mouseleave", () => {
+    if (holdTimer) {
+      clearTimeout(holdTimer);
+      holdTimer = null;
+    }
+    if (holdInterval) {
+      clearInterval(holdInterval);
+      holdInterval = null;
+    }
+    slot.querySelector(".selling").textContent = "";
+  });
+
+  setInterval(() => {
+    earned += item.value1;
+    slot.querySelector(".earned").textContent = "+$" + earned;
+  }, 1000);
+
+  return slot;
+}
+
+let spawnTimeout = null;
+let isVisible = true;
+let lastVisibleTime = Date.now();
+
+function spawnItem() {
+  if (!isVisible || items.length === 0) return;
+  
+  const item = getRandomItem();
+  const price = item.value2;
+  const div = document.createElement("div");
+  div.className = "movingItem";
+  div.style.backgroundColor = rarityColors[item.rarity] || "#667eea";
+  div.style.borderColor = rarityColors[item.rarity] || "#667eea";
+  div.innerHTML = `${item.name}<br><span style="font-size:14px">${item.rarity}</span><br>${price} (+${item.value1}/s)`;
+  div.style.top = "-150px";
+  middle.appendChild(div);
+
+  function updateAffordability() {
+    if (money < price) {
+      div.classList.add("cannotAfford");
+    } else {
+      div.classList.remove("cannotAfford");
+    }
+  }
+  updateAffordability();
+
+  div.addEventListener("click", () => {
+    if (money >= price) {
+      money -= price;
+      moneyDisplay.textContent = "$" + money;
+      for (let i = 0; i < slots.length; i++) {
+        if (!slots[i]) {
+          const slotEl = createSlotElement(item);
+          slots[i] = slotEl;
+          const targetArea = i < 3 ? slotsArea1 : slotsArea2;
+          const targetIndex = i < 3 ? i : i - 3;
+          targetArea.replaceChild(slotEl, targetArea.children[targetIndex]);
+          break;
+        }
+      }
+      div.remove();
+      clearInterval(moveInterval);
+      clearInterval(affordInterval);
+    }
+  });
+
+  let posY = -150;
+  const moveInterval = setInterval(() => {
+    posY += 2;
+    div.style.top = posY + "px";
+    if (posY > window.innerHeight) {
+      div.remove();
+      clearInterval(moveInterval);
+      clearInterval(affordInterval);
+    }
+  }, 20);
+
+  const affordInterval = setInterval(updateAffordability, 100);
+
+  spawnTimeout = setTimeout(spawnItem, 3000);
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    isVisible = false;
+    lastVisibleTime = Date.now();
+    if (spawnTimeout) {
+      clearTimeout(spawnTimeout);
+      spawnTimeout = null;
+    }
+  } else {
+    isVisible = true;
+    const timeAway = Math.floor((Date.now() - lastVisibleTime) / 1000);
+    if (timeAway > 0 && timeAway < 3600) {
+      let totalIncome = 0;
+      for (let i = 0; i < slots.length; i++) {
+        if (slots[i] && slots[i].dataset && slots[i].dataset.value) {
+          const value = parseInt(slots[i].dataset.value);
+          if (!isNaN(value)) {
+            totalIncome += value * timeAway;
+          }
+        }
+      }
+      if (totalIncome > 0) {
+        money += totalIncome;
+        moneyDisplay.textContent = "$" + money;
+      }
+    }
+    if (!spawnTimeout) {
+      spawnItem();
+    }
+  }
 });
 
-const leftSlots=document.querySelectorAll("#leftConveyor .slot");
-const rightSlots=document.querySelectorAll("#rightConveyor .slot");
+document.documentElement.requestFullscreen?.();
 
-function buyItem(item){
-  if(money<item.value2) return;
-  money-=item.value2;
-  moneyDisplay.innerHTML="$"+money;
+moneyDisplay.textContent = "$" + money;
 
-  let slot=[...leftSlots,...rightSlots].find(s=>s.children.length===0);
-  if(!slot) return alert("No empty slots!");
-
-  const div=document.createElement("div");
-  div.className="item";
-  div.innerHTML=`${item.name}\n$${item.value1}/s`;
-  let accumulated=0;
-
-  div.onmouseenter=()=>{
-    money+=accumulated;
-    moneyDisplay.innerHTML="$"+money;
-    accumulated=0;
-  };
-
-  const interval=setInterval(()=>{
-    accumulated+=item.value1;
-    let m=div.querySelector(".money");
-    if(!m){
-      const mspan=document.createElement("span");
-      mspan.className="money";
-      mspan.textContent=`$${accumulated}`;
-      div.appendChild(mspan);
-    }else{
-      m.textContent=`$${accumulated}`;
-    }
-  },1000);
-
-  slot.appendChild(div);
-}
+spawnItem();
 </script>
+
 </body>
 </html>
