@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Roll Game</title>
+  <style>
+    body {
+      background: black;
+      color: #00ff00;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #b {
+      padding: 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    #r {
+      margin-top: 20px;
+      font-size: 22px;
+    }
+  </style>
+</head>
+<body>
+  <button id="b">ROLL</button>
+  <div id="r"></div>
+
+  <script>
+    const r = document.getElementById("r");
+    const b = document.getElementById("b");
+    const items = ["Noobini Pizzanini","Lirili Larila","Tim Cheese","FluriFlura","Talpa Di Fero","Svinina Bombardino","Raccooni Jandelini","Tartaragno","Pipi Kiwi","Pipi Corni","Trippi Troppi","Tung Tung Tung Sahur","Gangster Footera","Bandito Bobritto","Boneca Ambalabu","Cacto Hipopotamo","Ta Ta Ta Ta Sahur","Cupkake Koala","Tric Trac Baraboom","Pipi Avocado","Pinealotto Fruttarino","Cappuccino Assassino","Bandito Axolito","Brr Brr Patapim","Avocadini Antilopini","Trulimero Trulicina","Bambini Crostini","Malame Amarele","Bananita Dolphinita","Perochello Lemonchello","Brri Brri Bicus Dicus Bombicus","Avocadini Guffo","Ti Ti Ti Sahur","Mangolini Parrocini","Frogato Pirato","Penguino Cocosino","Salamino Penguino","Doi Doi Do","Wombo Rollo","Penguino Cocosino","Mummio Rappitto","Burbaloni Loliloli","Chimpazini Bananini","Ballerina Cappuccina","Chef Crabracadabra","Lionel Cactuseli","Quivioli Ameleonni","Clickerino Crabo","Glorbo Fruttodrillo","Caramello Filtrello","Pipi Potato","Blueberrini Octopusin","Strawberelli Flamingelli","Pandaccini Bananini","Quackula","Cocosini Mama","Pi Pi Watermelon","Signore Carapace","Sigmа Boy","Sigmа Girl","Buho de Fuego","Frigo Camelo","Orangutini Ananassini","Rhino Toasterino","Bombardiro Crocodilo","Brutto Gialutto","Spioniro Golubiro","Bombombini Gusini","Zibra Zubra Zibralini","Tigrilini Watermelini","Avocadorilla","Cavallo Virtuso","Gorillo Subwoofero","Gorillo Watermelondrillo","Tob Tobi Tobi","Lerulerulerule","Ganganzelli Trulala","Te Te Te Sahur","Rhino Helicopterino","Magi Ribbitini","Tracoducotulu Delapeladustuz","Los Noobinis","Cachorrito Melonito","Carloo","Elephanto Frigo","Jacko Spaventosa","Carrotini Brainini","Centrucci Nuclucci","Toiletto Focaccino","Bananito Bandito","Cocofanto Elefanto","Antonio","Coco Elefanto","Girafa Celestre","Gattatino Nyanino","Chihuanini Taconini","Matteo","Tralalero Tralala","Los Crocodillitos","Trigoligre Frutonni","Money Money Man","Espresso Signora","Odin Din Din Dun","Statutino Libertino","Tipi Topi Taco","Unclito Samito","Alessio","Orcalero Orcala","Tralalita Tralala","Tukanno Bananno","Extinct Ballerina","Vampira Cappucina","Orcalero Orcala LB","Trenostruzzo Turbo 3000","Jacko Jack Jack","Urubini Flamenguini","Capi Taco","Gattito Tacoto","Trippi Troppi Troppa Trippa","Las Cappuchinas","Ballerino Lololo","Bulbito Bandito Traktorito","Los Tungtungtungcitos","Pakrahmatmamat","Los Bombinitos","Brr es Teh Patipum","Piccione Macchina","Pakrahmatmatina","Bombardini Tortini","Tractoro Dinosauro","Los Orcalitos","Crabbo Limonetta","Orcalita Orcala","Cacasito Satalito","Aquanaut","Corn Corn Corn Sahur","Tartaruga Cisterna","Mummy Ambalabu","Squalanana","Snailenzo","Dug Dug Dug","Los Tipi Tacos","Frio Ninja","Piccionetta Macchina","Mastodontico Telepiedone","Bambu Bambu Sahur","Anpali Babel","Noo La Polizia","Cappuccino Clownino","Brasilini Berimbini","Skull Skull Skull","Krupuk Pagi Pagi","Belula Beluga","Tentacolo Tecnico","Pop Pop Sahur","La Vacca Staturno Saturnita","Bisonte Giuppitere","Los Matteos","Karkerkar Kurkur","Trenostruzzo Turbo 4000","Jackorilla","Sammyni Spyderini","Torrtuginni Dragonfrutini","Dul Dul Dul","Blackhole Goat","Chachechi","Agarrini la Palini","Los Spyderinis","Extinct Tralalero","Fragola la la la","Los Tralaleritos","Zombie Tralala","Los Tortus","Vulturino Skeletono","Boatito Auratito","Piccione Macchina 2","La Vacca Staturno 2","Chimpanzini Spiderini","Tortuginni Dragonfruitini","Los Tralaleritos 2","Guerriro Digitale","Yess my examine","La Karkerkar Combinasion","Extinct Matteo","Las Tralaleritas","Pumpkini Spyderini","Job Job Job Sahur","Frankentteo","Karker Sahur","Los Karkeritos","Las Vaquitas Saturnitas 2","La Vacca Jacko Linterino","Trickolino","Perrito Burrito","Graipuss Medussi","Noo My Hotspot","Los Jobcitos","Noo my examine 2","Sahur Combinasion","Pot Hotspot","Telemorte","To To To Sahur","Pirulitoita Bicicleteira","Horegini Boom","Pot Pumpkin","Quesadilla Crocodila","Chicleteira Bicicleteira","Quesadillo Vampiro","Burrito Bandito 2","Chicleteirina Bicicleteirina","Noo my Candy","Los Nooo My Hotspotsitos","Rang Ring Bus","Guest 666","Los Chicleteiras","67","La Grande Combinasion","Mariachi Corazoni","Swag Soda","Los Combinasionas","Nuclearo Dinossauro","Tacorita Bicicleta","Las Sis","Los Spooky Combinasionas","Karkerkar combinasion","Los Hotspotsitos","Money Money Puggy","Los Mobilis","Los 67","Celularcini Viciosini","La Extinct Grande","Los Bros","La Spooky Grande","Chillin Chili","Chipso and Queso","Mieteteira Bicicleteira","Tralaledon","Los Puggies","Esok Sekolah","Los Primos","Eviledon","Los Tacoritas","Tang Tang Keletang","Ketupat Kepat","La Taco Combinasion","Tictac Sahur","Orcaledon","Los Bros 2","La Supreme Combinasion","Ketchuru and Masturu","Garama and Madundung","Las Vaquitas Saturnitas 3","Chicleteira Bicicleteira 2","Spaghetti Tualetti","Los Spaghettis","Spooky and Pumpky","Fragrama and Chocrama","La Casa Boo","La Secret Combinasion","Burguro And Fryuro","Capitano Moby","Headless Horseman","Dragon Cannelloni","Meowl","Strawberry Elephant"];
+
+    b.onclick = () => {
+      r.innerHTML = items[Math.floor(Math.random() * items.length)];
+    };
+  </script>
+</body>
+</html>
