@@ -1,64 +1,407 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Steal A Brainrot</title>
-  <style>
-    body {
-      background: black;
-      color: #00ff00;
-      font-family: monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    #b {
-      padding: 20px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    #r {
-      margin-top: 20px;
-      font-size: 18px;
-      text-align: center;
-      white-space: pre-line;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Steal A Brainrot Web</title>
+<style>
+body {
+  background: black;
+  color: #00ff00;
+  font-family: monospace;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 100px;
+  padding-top: 50px;
+}
+.conveyor {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.slot {
+  width: 150px;
+  height: 50px;
+  border: 2px solid #00ff00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+.item {
+  width: 140px;
+  height: 40px;
+  background: #003300;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  transition: transform 0.3s;
+}
+.money {
+  position: absolute;
+  top: -20px;
+  color: yellow;
+  font-size: 12px;
+}
+#shop {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  max-width: 90%;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #00ff00;
+  padding: 5px;
+}
+.shop-item {
+  padding: 5px 10px;
+  border: 1px solid #00ff00;
+  cursor: pointer;
+  white-space: nowrap;
+}
+</style>
 </head>
 <body>
-  <button id="b">ROLL</button>
-  <div id="r"></div>
 
-  <script>
-    const r = document.getElementById("r");
-    const b = document.getElementById("b");
+<div class="conveyor" id="leftConveyor">
+  <div class="slot"></div>
+  <div class="slot"></div>
+  <div class="slot"></div>
+</div>
 
-    const items = [
-      {name: "Noobini Pizzanini", rarity: "Common", value1: 1, value2: "25"},
-      {name: "Lirili Larila", rarity: "Common", value1: 3, value2: "250"},
-      {name: "Tim Cheese", rarity: "Common", value1: 5, value2: "500"},
-      {name: "FluriFlura", rarity: "Common", value1: 7, value2: "750"},
-      {name: "Talpa Di Fero", rarity: "Common", value1: 9, value2: "1k"},
-      {name: "Svinina Bombardino", rarity: "Common", value1: 10, value2: "1.2k"},
-      {name: "Raccooni Jandelini", rarity: "Common", value1: 12, value2: "1.3K"},
-      {name: "Tartaragno", rarity: "Common", value1: 13, value2: "1.5k"},
-      {name: "Pipi Kiwi", rarity: "Common", value1: 13, value2: "1.5k"},
-      {name: "Pipi Corni", rarity: "Common", value1: 14, value2: "1.7K"},
-      {name: "Trippi Troppi", rarity: "Rare", value1: 15, value2: "2k"},
-      {name: "Tung Tung Tung Sahur", rarity: "Rare", value1: 25, value2: "3k"},
-      {name: "Gangster Footera", rarity: "Rare", value1: 30, value2: "4k"},
-      {name: "Bandito Bobritto", rarity: "Rare", value1: 35, value2: "4.5k"},
-      {name: "Boneca Ambalabu", rarity: "Rare", value1: 40, value2: "5k"},
-      {name: "Cacto Hipopotamo", rarity: "Rare", value1: 50, value2: "6.5k"}
-      // Add the rest of your items in the same format
-    ];
+<div class="conveyor" id="rightConveyor">
+  <div class="slot"></div>
+  <div class="slot"></div>
+  <div class="slot"></div>
+</div>
 
-    b.onclick = () => {
-      const item = items[Math.floor(Math.random() * items.length)];
-      r.innerHTML = `${item.name}\nRarity: ${item.rarity}\nValue1: ${item.value1}\nValue2: ${item.value2}`;
-    };
-  </script>
+<div id="shop"></div>
+<div id="moneyDisplay" style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); font-size: 24px;">$0</div>
+
+<script>
+let money = 0;
+const moneyDisplay = document.getElementById("moneyDisplay");
+
+const items = [
+{name:"Noobini Pizzanini",rarity:"Common",value1:1,value2:25},
+{name:"Lirili Larila",rarity:"Common",value1:3,value2:250},
+{name:"Tim Cheese",rarity:"Common",value1:5,value2:500},
+{name:"FluriFlura",rarity:"Common",value1:7,value2:750},
+{name:"Talpa Di Fero",rarity:"Common",value1:9,value2:1000},
+{name:"Svinina Bombardino",rarity:"Common",value1:10,value2:1200},
+{name:"Raccooni Jandelini",rarity:"Common",value1:12,value2:1300},
+{name:"Tartaragno",rarity:"Common",value1:13,value2:1500},
+{name:"Pipi Kiwi",rarity:"Common",value1:13,value2:1500},
+{name:"Pipi Corni",rarity:"Common",value1:14,value2:1700},
+{name:"Trippi Troppi",rarity:"Rare",value1:15,value2:2000},
+{name:"Tung Tung Tung Sahur",rarity:"Rare",value1:25,value2:3000},
+{name:"Gangster Footera",rarity:"Rare",value1:30,value2:4000},
+{name:"Bandito Bobritto",rarity:"Rare",value1:35,value2:4500},
+{name:"Boneca Ambalabu",rarity:"Rare",value1:40,value2:5000},
+{name:"Cacto Hipopotamo",rarity:"Rare",value1:50,value2:6500},
+{name:"Ta Ta Ta Ta Sahur",rarity:"Rare",value1:55,value2:7500},
+{name:"Cupkake Koala",rarity:"Rare",value1:60,value2:8000},
+{name:"Tric Trac Baraboom",rarity:"Rare",value1:65,value2:9000},
+{name:"Pipi Avocado",rarity:"Rare",value1:70,value2:9500},
+{name:"Pinealotto Fruttarino",rarity:"Rare",value1:75,value2:9700},
+{name:"Cappuccino Assassino",rarity:"Epic",value1:75,value2:10000},
+{name:"Bandito Axolito",rarity:"Epic",value1:90,value2:12500},
+{name:"Brr Brr Patapim",rarity:"Epic",value1:100,value2:15000},
+{name:"Avocadini Antilopini",rarity:"Epic",value1:115,value2:17500},
+{name:"Trulimero Trulicina",rarity:"Epic",value1:125,value2:20000},
+{name:"Bambini Crostini",rarity:"Epic",value1:130,value2:22500},
+{name:"Malame Amarele",rarity:"Epic",value1:140,value2:23500},
+{name:"Bananita Dolphinita",rarity:"Epic",value1:150,value2:25000},
+{name:"Perochello Lemonchello",rarity:"Epic",value1:160,value2:27500},
+{name:"Brri Brri Bicus Dicus Bombicus",rarity:"Epic",value1:175,value2:30000},
+{name:"Avocadini Guffo",rarity:"Epic",value1:225,value2:35000},
+{name:"Ti Ti Ti Sahur",rarity:"Epic",value1:225,value2:37500},
+{name:"Mangolini Parrocini",rarity:"Epic",value1:235,value2:38500},
+{name:"Frogato Pirato",rarity:"Epic",value1:240,value2:39000},
+{name:"Penguino Cocosino",rarity:"Epic",value1:300,value2:45000},
+{name:"Salamino Penguino",rarity:"Epic",value1:250,value2:40000},
+{name:"Doi Doi Do",rarity:"Epic",value1:260,value2:41000},
+{name:"Wombo Rollo",rarity:"Epic",value1:275,value2:42500},
+{name:"Mummio Rappitto",rarity:"Epic",value1:325,value2:47500},
+{name:"Burbaloni Loliloli",rarity:"Legendary",value1:200,value2:35000},
+{name:"Chimpazini Bananini",rarity:"Legendary",value1:300,value2:50000},
+{name:"Ballerina Cappuccina",rarity:"Legendary",value1:500,value2:100000},
+{name:"Chef Crabracadabra",rarity:"Legendary",value1:600,value2:150000},
+{name:"Lionel Cactuseli",rarity:"Legendary",value1:650,value2:175000},
+{name:"Quivioli Ameleonni",rarity:"Legendary",value1:900,value2:225000},
+{name:"Clickerino Crabo",rarity:"Legendary",value1:1000,value2:250000},
+{name:"Glorbo Fruttodrillo",rarity:"Legendary",value1:750,value2:200000},
+{name:"Caramello Filtrello",rarity:"Legendary",value1:1000,value2:255000},
+{name:"Pipi Potato",rarity:"Legendary",value1:1100,value2:265000},
+{name:"Blueberrini Octopusin",rarity:"Legendary",value1:1000,value2:250000},
+{name:"Strawberelli Flamingelli",rarity:"Legendary",value1:1100,value2:275000},
+{name:"Pandaccini Bananini",rarity:"Legendary",value1:1200,value2:300000},
+{name:"Quackula",rarity:"Legendary",value1:1200,value2:310000},
+{name:"Cocosini Mama",rarity:"Legendary",value1:1200,value2:285000},
+{name:"Pi Pi Watermelon",rarity:"Legendary",value1:1300,value2:315000},
+{name:"Signore Carapace",rarity:"Legendary",value1:1300,value2:320000},
+{name:"Sigmа Boy",rarity:"Legendary",value1:1300,value2:325000},
+{name:"Sigmа Girl",rarity:"Legendary",value1:1800,value2:340000},
+{name:"Buho de Fuego",rarity:"Legendary",value1:1800,value2:345000},
+{name:"Frigo Camelo",rarity:"Mythic",value1:1400,value2:300000},
+{name:"Orangutini Ananassini",rarity:"Mythic",value1:1700,value2:400000},
+{name:"Rhino Toasterino",rarity:"Mythic",value1:2100,value2:450000},
+{name:"Bombardiro Crocodilo",rarity:"Mythic",value1:2500,value2:500000},
+{name:"Brutto Gialutto",rarity:"Mythic",value1:3000,value2:600000},
+{name:"Spioniro Golubiro",rarity:"Mythic (Lucky Box)",value1:3500,value2:750000},
+{name:"Bombombini Gusini",rarity:"Mythic",value1:5000,value2:1000000},
+{name:"Zibra Zubra Zibralini",rarity:"Mythic (Lucky Box)",value1:6000,value2:1000000},
+{name:"Tigrilini Watermelini",rarity:"Mythic (Lucky Box)",value1:6500,value2:1000000},
+{name:"Avocadorilla",rarity:"Mythic",value1:7000,value2:2000000},
+{name:"Cavallo Virtuso",rarity:"Mythic",value1:7500,value2:2500000},
+{name:"Gorillo Subwoofero",rarity:"Mythic",value1:7700,value2:2700000},
+{name:"Gorillo Watermelondrillo",rarity:"Mythic",value1:8000,value2:3000000},
+{name:"Tob Tobi Tobi",rarity:"Mythic",value1:8500,value2:3200000},
+{name:"Lerulerulerule",rarity:"Mythic",value1:8700,value2:3500000},
+{name:"Ganganzelli Trulala",rarity:"Mythic",value1:9000,value2:3700000},
+{name:"Te Te Te Sahur",rarity:"Mythic",value1:9500,value2:4000000},
+{name:"Rhino Helicopterino",rarity:"Mythic",value1:11000,value2:4100000},
+{name:"Magi Ribbitini",rarity:"Mythic",value1:11500,value2:4200000},
+{name:"Tracoducotulu Delapeladustuz",rarity:"Mythic",value1:12000,value2:4200000},
+{name:"Los Noobinis",rarity:"Mythic",value1:12500,value2:4300000},
+{name:"Cachorrito Melonito",rarity:"Mythic",value1:13000,value2:4400000},
+{name:"Carloo",rarity:"Mythic",value1:13500,value2:4500000},
+{name:"Elephanto Frigo",rarity:"Mythic",value1:14000,value2:4600000},
+{name:"Jacko Spaventosa",rarity:"Mythic",value1:14200,value2:4700000},
+{name:"Carrotini Brainini",rarity:"Mythic (Lucky Box)",value1:15000,value2:4700000},
+{name:"Centrucci Nuclucci",rarity:"Mythic",value1:15500,value2:4800000},
+{name:"Toiletto Focaccino",rarity:"Mythic",value1:15000,value2:4800000},
+{name:"Bananito Bandito",rarity:"Mythic (Lucky Box)",value1:16500,value2:4900000},
+{name:"Cocofanto Elefanto",rarity:"Brainrot God",value1:17500,value2:5000000},
+{name:"Antonio",rarity:"Brainrot God",value1:18500,value2:6000000},
+{name:"Coco Elefanto",rarity:"Brainrot God",value1:10000,value2:5000000},
+{name:"Girafa Celestre",rarity:"Brainrot God",value1:20000,value2:7500000},
+{name:"Gattatino Nyanino",rarity:"Brainrot God",value1:35000,value2:7500000},
+{name:"Chihuanini Taconini",rarity:"Brainrot God",value1:45000,value2:8500000},
+{name:"Matteo",rarity:"Brainrot God",value1:50000,value2:10000000},
+{name:"Tralalero Tralala",rarity:"Brainrot God",value1:50000,value2:10000000},
+{name:"Los Crocodillitos",rarity:"Brainrot God",value1:55000,value2:12500000},
+{name:"Trigoligre Frutonni",rarity:"Brainrot God (Lucky Box)",value1:60000,value2:15000000},
+{name:"Money Money Man",rarity:"Brainrot God",value1:65000,value2:17500000},
+{name:"Espresso Signora",rarity:"Brainrot God",value1:70000,value2:25000000},
+{name:"Odin Din Din Dun",rarity:"Brainrot God",value1:75000,value2:15000000},
+{name:"Statutino Libertino",rarity:"Brainrot God",value1:75000,value2:20000000},
+{name:"Tipi Topi Taco",rarity:"Brainrot God",value1:75000,value2:20000000},
+{name:"Unclito Samito",rarity:"Brainrot God",value1:75000,value2:20000000},
+{name:"Alessio",rarity:"Brainrot God",value1:85000,value2:17500000},
+{name:"Orcalero Orcala",rarity:"Brainrot God",value1:100000,value2:25000000},
+{name:"Tralalita Tralala",rarity:"Brainrot God",value1:100000,value2:20000000},
+{name:"Tukanno Bananno",rarity:"Brainrot God",value1:100000,value2:22500000},
+{name:"Extinct Ballerina",rarity:"Brainrot God",value1:125000,value2:23500000},
+{name:"Vampira Cappucina",rarity:"Brainrot God",value1:125000,value2:24500000},
+{name:"Orcalero Orcala",rarity:"Brainrot God (Lucky Box)",value1:100000,value2:15000000},
+{name:"Trenostruzzo Turbo 3000",rarity:"Brainrot God",value1:150000,value2:25000000},
+{name:"Jacko Jack Jack",rarity:"Brainrot God",value1:150000,value2:30000000},
+{name:"Urubini Flamenguini",rarity:"Brainrot God",value1:150000,value2:30000000},
+{name:"Capi Taco",rarity:"Brainrot God",value1:155000,value2:31000000},
+{name:"Gattito Tacoto",rarity:"Brainrot God",value1:165000,value2:32500000},
+{name:"Trippi Troppi Troppa Trippa",rarity:"Brainrot God",value1:175000,value2:30000000},
+{name:"Las Cappuchinas",rarity:"Brainrot God",value1:185000,value2:32500000},
+{name:"Ballerino Lololo",rarity:"Brainrot God",value1:200000,value2:35000000},
+{name:"Bulbito Bandito Traktorito",rarity:"Brainrot God (Lucky Box)",value1:205000,value2:35000000},
+{name:"Los Tungtungtungcitos",rarity:"Brainrot God",value1:210000,value2:37500000},
+{name:"Pakrahmatmamat",rarity:"Brainrot God",value1:215000,value2:37500000},
+{name:"Los Bombinitos",rarity:"Brainrot God",value1:220000,value2:42500000},
+{name:"Brr es Teh Patipum",rarity:"Brainrot God",value1:225000,value2:40000000},
+{name:"Piccione Macchina",rarity:"Brainrot God",value1:225000,value2:40000000},
+{name:"Pakrahmatmatina",rarity:"Brainrot God",value1:225000,value2:40500000},
+{name:"Bombardini Tortini",rarity:"Brainrot God",value1:225000,value2:50000000},
+{name:"Tractoro Dinosauro",rarity:"Brainrot God",value1:230000,value2:42500000},
+{name:"Los Orcalitos",rarity:"Brainrot God",value1:235000,value2:45000000},
+{name:"Crabbo Limonetta",rarity:"Brainrot God",value1:235000,value2:46000000},
+{name:"Orcalita Orcala",rarity:"Brainrot God",value1:240000,value2:45000000},
+{name:"Cacasito Satalito",rarity:"Brainrot God",value1:240000,value2:45000000},
+{name:"Aquanaut",rarity:"Brainrot God",value1:245000,value2:45500000},
+{name:"Corn Corn Corn Sahur",rarity:"Brainrot God",value1:250000,value2:45000000},
+{name:"Tartaruga Cisterna",rarity:"Brainrot God",value1:250000,value2:45000000},
+{name:"Mummy Ambalabu",rarity:"Brainrot God",value1:250000,value2:45000000},
+{name:"Squalanana",rarity:"Brainrot God",value1:250000,value2:45000000},
+{name:"Snailenzo",rarity:"Brainrot God",value1:250000,value2:45000000},
+{name:"Dug Dug Dug",rarity:"Brainrot God",value1:255000,value2:45500000},
+{name:"Los Tipi Tacos",rarity:"Brainrot God",value1:260000,value2:46000000},
+{name:"Frio Ninja",rarity:"Brainrot God",value1:265000,value2:46500000},
+{name:"Piccionetta Macchina",rarity:"Brainrot God",value1:270000,value2:47000000},
+{name:"Mastodontico Telepiedone",rarity:"Brainrot God (Lucky Box)",value1:275000,value2:47500000},
+{name:"Bambu Bambu Sahur",rarity:"Brainrot God",value1:275000,value2:47500000},
+{name:"Anpali Babel",rarity:"Brainrot God",value1:280000,value2:48000000},
+{name:"Noo La Polizia",rarity:"Brainrot God",value1:280000,value2:67000000},
+{name:"Cappuccino Clownino",rarity:"Brainrot God",value1:285000,value2:48500000},
+{name:"Brasilini Berimbini",rarity:"Brainrot God",value1:285000,value2:55000000},
+{name:"Skull Skull Skull",rarity:"Brainrot God",value1:290000,value2:60000000},
+{name:"Krupuk Pagi Pagi",rarity:"Brainrot God",value1:290000,value2:60000000},
+{name:"Belula Beluga",rarity:"Brainrot God",value1:290000,value2:60000000},
+{name:"Tentacolo Tecnico",rarity:"Brainrot God",value1:292500,value2:62500000},
+{name:"Pop Pop Sahur",rarity:"Brainrot God (Lucky Box)",value1:295000,value2:65000000},
+{name:"La Vacca Staturno Saturnita",rarity:"Secret",value1:300000,value2:50000000},
+{name:"Bisonte Giuppitere",rarity:"Secret",value1:300000,value2:75000000},
+{name:"Los Matteos",rarity:"Secret",value1:300000,value2:100000000},
+{name:"Karkerkar Kurkur",rarity:"Secret",value1:300000,value2:100000000},
+{name:"Trenostruzzo Turbo 4000",rarity:"Secret",value1:310000,value2:100000000},
+{name:"Jackorilla",rarity:"Secret",value1:315000,value2:80000000},
+{name:"Sammyni Spyderini",rarity:"Secret",value1:325000,value2:100000000},
+{name:"Torrtuginni Dragonfrutini",rarity:"Secret (Lucky Box)",value1:350000,value2:125000000},
+{name:"Dul Dul Dul",rarity:"Secret",value1:375000,value2:150000000},
+{name:"Blackhole Goat",rarity:"Secret",value1:400000,value2:75000000},
+{name:"Chachechi",rarity:"Secret",value1:400000,value2:85000000},
+{name:"Agarrini la Palini",rarity:"Secret",value1:425000,value2:80000000},
+{name:"Los Spyderinis",rarity:"Secret",value1:450000,value2:250000000},
+{name:"Extinct Tralalero",rarity:"Secret",value1:450000,value2:125000000},
+{name:"Fragola la la la",rarity:"Secret",value1:450000,value2:125000000},
+{name:"Los Tralaleritos",rarity:"Secret",value1:500000,value2:100000000},
+{name:"Zombie Tralala",rarity:"Secret",value1:500000,value2:100000000},
+{name:"Los Tortus",rarity:"Secret",value1:500000,value2:100000000},
+{name:"Vulturino Skeletono",rarity:"Secret",value1:500000,value2:110000000},
+{name:"Boatito Auratito",rarity:"Secret",value1:525000,value2:110000000},
+{name:"Los Crocodillitos",rarity:"Brainrot God",value1:55000,value2:12500000},
+{name:"Piccione Macchina",rarity:"Brainrot God",value1:0,value2:0}, // Placeholder TBA
+{name:"La Vacca Staturno Saturnita",rarity:"Secret",value1:250000,value2:50000000},
+{name:"Chimpanzini Spiderini",rarity:"Secret",value1:325000,value2:100000000},
+{name:"Tortuginni Dragonfruitini",rarity:"Secret (Lucky Box)",value1:350000,value2:500000000},
+{name:"Los Tralaleritos",rarity:"Secret",value1:500000,value2:150000000},
+{name:"Guerriro Digitale",rarity:"Secret",value1:550000,value2:120000000},
+{name:"Yess my examine",rarity:"Secret",value1:575000,value2:130000000},
+{name:"La Karkerkar Combinasion",rarity:"Secret",value1:600000,value2:160000000},
+{name:"Extinct Matteo",rarity:"Secret",value1:625000,value2:140000000},
+{name:"Las Tralaleritas",rarity:"Secret",value1:650000,value2:150000000},
+{name:"Pumpkini Spyderini",rarity:"Secret",value1:650000,value2:165000000},
+{name:"Job Job Job Sahur",rarity:"Secret",value1:700000,value2:175000000},
+{name:"Frankentteo",rarity:"Secret",value1:700000,value2:175000000},
+{name:"Karker Sahur",rarity:"Secret",value1:725000,value2:185000000},
+{name:"Los Karkeritos",rarity:"Secret",value1:750000,value2:200000000},
+{name:"Las Vaquitas Saturnitas",rarity:"Secret",value1:750000,value2:200000000},
+{name:"La Vacca Jacko Linterino",rarity:"Secret",value1:850000,value2:225000000},
+{name:"Trickolino",rarity:"Secret",value1:900000,value2:235000000},
+{name:"Perrito Burrito",rarity:"Secret",value1:1000000,value2:250000000},
+{name:"Graipuss Medussi",rarity:"Secret",value1:1000000,value2:250000000},
+{name:"Noo My Hotspot",rarity:"Secret",value1:2500000,value2:600000000},
+{name:"Los Jobcitos",rarity:"Secret",value1:1500000,value2:500000000},
+{name:"Noo my examine",rarity:"Secret",value1:1700000,value2:525000000},
+{name:"Sahur Combinasion",rarity:"Secret",value1:3500000,value2:750000000},
+{name:"Pot Hotspot",rarity:"Secret (Lucky Box)",value1:2500000,value2:500000000},
+{name:"Telemorte",rarity:"Secret",value1:2000000,value2:550000000},
+{name:"To To To Sahur",rarity:"Secret",value1:2200000,value2:575000000},
+{name:"Pirulitoita Bicicleteira",rarity:"Secret",value1:2500000,value2:600000000},
+{name:"Horegini Boom",rarity:"Secret",value1:2700000,value2:650000000},
+{name:"Pot Pumpkin",rarity:"Secret",value1:3000000,value2:700000000},
+{name:"Quesadilla Crocodila",rarity:"Secret",value1:3000000,value2:700000000},
+{name:"Chicleteira Bicicleteira",rarity:"Secret",value1:3500000,value2:750000000},
+{name:"Quesadillo Vampiro",rarity:"Secret",value1:3500000,value2:750000000},
+{name:"Burrito Bandito",rarity:"Secret",value1:4000000,value2:850000000},
+{name:"Chicleteirina Bicicleteirina",rarity:"Secret",value1:4000000,value2:850000000},
+{name:"Noo my Candy",rarity:"Secret",value1:5000000,value2:900000000},
+{name:"Los Nooo My Hotspotsitos",rarity:"Secret",value1:5000000,value2:1000000000},
+{name:"Rang Ring Bus",rarity:"Secret",value1:6000000,value2:1100000000},
+{name:"Guest 666",rarity:"Secret",value1:6600000,value2:1100000000},
+{name:"Los Chicleteiras",rarity:"Secret",value1:7000000,value2:1200000000},
+{name:"67",rarity:"Secret",value1:7500000,value2:1200000000},
+{name:"La Grande Combinasion",rarity:"Secret",value1:10000000,value2:1000000000},
+{name:"Mariachi Corazoni",rarity:"Secret",value1:12500000,value2:1700000000},
+{name:"Swag Soda",rarity:"Secret",value1:13000000,value2:1800000000},
+{name:"Los Combinasionas",rarity:"Secret",value1:15000000,value2:2000000000},
+{name:"Nuclearo Dinossauro",rarity:"Secret",value1:15000000,value2:2500000000},
+{name:"Tacorita Bicicleta",rarity:"Secret",value1:16500000,value2:2200000000},
+{name:"Las Sis",rarity:"Secret",value1:17500000,value2:2500000000},
+{name:"Los Spooky Combinasionas",rarity:"Secret",value1:20000000,value2:3000000000},
+{name:"Karkerkar combinasion",rarity:"Secret",value1:17500000,value2:2500000000},
+{name:"Los Hotspotsitos",rarity:"Secret",value1:20000000,value2:3000000000},
+{name:"Money Money Puggy",rarity:"Secret",value1:21000000,value2:2600000000},
+{name:"Los Mobilis",rarity:"Secret",value1:22000000,value2:2700000000},
+{name:"Los 67",rarity:"Secret",value1:22500000,value2:2700000000},
+{name:"Celularcini Viciosini",rarity:"Secret",value1:22500000,value2:2700000000},
+{name:"La Extinct Grande",rarity:"Secret",value1:23500000,value2:3200000000},
+{name:"Los Bros",rarity:"Secret",value1:24000000,value2:2600000000},
+{name:"La Spooky Grande",rarity:"Secret",value1:24500000,value2:2900000000},
+{name:"Chillin Chili",rarity:"Secret",value1:25000000,value2:2500000000},
+{name:"Chipso and Queso",rarity:"Secret",value1:25000000,value2:2500000000},
+{name:"Mieteteira Bicicleteira",rarity:"Secret",value1:26000000,value2:2700000000},
+{name:"Tralaledon",rarity:"Secret",value1:27500000,value2:3000000000},
+{name:"Los Puggies",rarity:"Secret",value1:30000000,value2:3000000000},
+{name:"Esok Sekolah",rarity:"Secret",value1:30000000,value2:3500000000},
+{name:"Los Primos",rarity:"Secret",value1:31000000,value2:3700000000},
+{name:"Eviledon",rarity:"Secret",value1:31500000,value2:3800000000},
+{name:"Los Tacoritas",rarity:"Secret",value1:32000000,value2:4000000000},
+{name:"Tang Tang Keletang",rarity:"Secret",value1:33500000,value2:4500000000},
+{name:"Ketupat Kepat",rarity:"Secret",value1:35000000,value2:5000000000},
+{name:"La Taco Combinasion",rarity:"Secret",value1:35000000,value2:5000000000},
+{name:"Tictac Sahur",rarity:"Secret",value1:37500000,value2:6000000000},
+{name:"Orcaledon",rarity:"Secret",value1:40000000,value2:7000000000},
+{name:"Los Bros",rarity:"Secret",value1:37500000,value2:6000000000},
+{name:"La Supreme Combinasion",rarity:"Secret",value1:40000000,value2:7000000000},
+{name:"Ketchuru and Masturu",rarity:"Secret",value1:42500000,value2:7500000000},
+{name:"Garama and Madundung",rarity:"Secret",value1:50000000,value2:10000000000},
+{name:"Spaghetti Tualetti",rarity:"Secret",value1:50000000,value2:15000000000},
+{name:"Los Spaghettis",rarity:"Secret",value1:70000000,value2:20000000000},
+{name:"Spooky and Pumpky",rarity:"Secret",value1:80000000,value2:25000000000},
+{name:"Fragrama and Chocrama",rarity:"Secret",value1:100000000,value2:40000000000},
+{name:"La Casa Boo",rarity:"Secret",value1:100000000,value2:40000000000},
+{name:"La Secret Combinasion",rarity:"Secret (Lucky Box)",value1:125000000,value2:50000000000},
+{name:"Burguro And Fryuro",rarity:"Secret",value1:150000000,value2:75000000000},
+{name:"Capitano Moby",rarity:"Secret",value1:160000000,value2:125000000000},
+{name:"Headless Horseman",rarity:"Secret",value1:175000000,value2:150000000000},
+{name:"Dragon Cannelloni",rarity:"Secret",value1:200000000,value2:200000000000},
+{name:"Meowl",rarity:"OG",value1:300000000,value2:350000000000},
+{name:"Strawberry Elephant",rarity:"OG",value1:350000000,value2:500000000000}
+];
+
+// Populate shop
+const shop = document.getElementById("shop");
+items.forEach(item=>{
+  const btn=document.createElement("div");
+  btn.className="shop-item";
+  btn.innerHTML=`${item.name} ($${item.value2})`;
+  btn.onclick=()=>buyItem(item);
+  shop.appendChild(btn);
+});
+
+const leftSlots=document.querySelectorAll("#leftConveyor .slot");
+const rightSlots=document.querySelectorAll("#rightConveyor .slot");
+
+function buyItem(item){
+  if(money<item.value2) return;
+  money-=item.value2;
+  moneyDisplay.innerHTML="$"+money;
+
+  let slot=[...leftSlots,...rightSlots].find(s=>s.children.length===0);
+  if(!slot) return alert("No empty slots!");
+
+  const div=document.createElement("div");
+  div.className="item";
+  div.innerHTML=`${item.name}\n$${item.value1}/s`;
+  let accumulated=0;
+
+  div.onmouseenter=()=>{
+    money+=accumulated;
+    moneyDisplay.innerHTML="$"+money;
+    accumulated=0;
+  };
+
+  const interval=setInterval(()=>{
+    accumulated+=item.value1;
+    let m=div.querySelector(".money");
+    if(!m){
+      const mspan=document.createElement("span");
+      mspan.className="money";
+      mspan.textContent=`$${accumulated}`;
+      div.appendChild(mspan);
+    }else{
+      m.textContent=`$${accumulated}`;
+    }
+  },1000);
+
+  slot.appendChild(div);
+}
+</script>
 </body>
 </html>
